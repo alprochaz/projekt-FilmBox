@@ -104,3 +104,195 @@ const filmy = [
 		premiera: '2022-12-24',
 	},
 ]
+
+// Bonus k 6 ukolu - funkce musi byt zde, abych ji mohla pouzit na radku 159
+const jakDalekoDoPremiery = (premieraOdDneska) => {
+	if (premieraOdDneska === 0) {
+		return 'je dnes'
+	} else if (premieraOdDneska > 0) {
+		return 'bude za ' + premieraOdDneska + ' dni'
+	} else {
+		return 'bylo před '+ Math.abs(premieraOdDneska) + ' dny'
+	}
+}
+
+// 5. ukol: Zobrazte příslušné informace o filmu na stránce s detailem.
+// 1.	Protože stránka film.html obsluhuje datail všech filmů, budete si muset přes adresu stránky předat informaci, který konkrétní film si 
+//		uživatel právě prohlíží. Využijeme toho, že na konec adresy můžeme přidat znak mřížky (#) a za něj libovolný text, který následně můžeme
+//		 v JavaScriptu přečíst. (V tomto kroku jsou jen informace, nic neděláte.)
+// 2.	V souboru seznam.js v HTML kódu z předchozího úkolu (který zobrazuje jeden film v seznamu) přidejte do odkazu href za film.html znak mřížky
+//		 (#) a za něj ještě unikátní identifikátor (id), který má každý film jiný. (vyreseno v seznam.js)
+// 3.	V souboru film.js zjistěte, na film s jakým id se uživatel chce dívat – zjistíte to z property location.hash. Všimněte si, že hodnota
+//		 vlastnosti hash začíná znakem mřížky (#). Id v poli filmy mřížkou nezačínají. Mřížku vhodnou metodou na řetězcích odřízněte. 
+const filmId = window.location.hash.slice(1)
+console.log(filmId)
+
+// 4.	Cyklem prohledejte pole filmy a film s id stejným jako hash (bez mřížky) si poznamenejte do proměnné. (Případně můžete také použít 
+//		funkci find na poli.)
+
+const film = filmy.find(item => item.id === filmId)
+
+
+// 5.	Vepište informace (název, popis, plakát) o nalezeném filmu do stránky. Upravte textový obsah a atributy příslušných potomků 
+//		prvku #detail-filmu. Do .card-text vepište dlouhý popis filmu.
+const detailFilmuEl = document.querySelector('#detail-filmu')
+detailFilmuEl.innerHTML = ''
+
+detailFilmuEl.innerHTML += `
+	<div class="row g-0">
+		<div class="col-md-5">
+			<img
+				src="${film.plakat.url}"
+				alt="plakát"
+				class="img-fluid rounded-start"
+				width="${film.plakat.sirka}"
+				height="${film.plakat.vyska}"
+			/>
+		</div>
+		<div class="col-md-7">
+			<div class="card-body">
+				<h5 class="card-title">${film.nazev}</h5>
+				<p class="card-text">${film.popis}</p>
+				<p class="card-text">
+					<small class="text-muted" id="premiera">Premiéra 
+					<strong>${dayjs(film.premiera).format('D. M. YYYY')}</strong>, 
+					což ${jakDalekoDoPremiery(dayjs(film.premiera).diff(dayjs(), 'days'))}. </small> 
+				</p>
+				<h6>Hodnocení</h6>
+				<div class="stars">
+					<button class="far fa-star button-star" data-mdb-toggle="tooltip" title="Nic moc">
+						1
+					</button>
+					<button class="far fa-star button-star"	data-mdb-toggle="tooltip" title="Ucházející">
+						2
+					</button>
+					<button	class="far fa-star button-star"	data-mdb-toggle="tooltip" title="Dobrý">
+						3
+					</button>
+					<button	class="far fa-star button-star"	data-mdb-toggle="tooltip" title="Skvělý">
+						4
+					</button>
+					<button	class="far fa-star button-star"	data-mdb-toggle="tooltip" title="Úžasný">
+						5
+					</button>
+				</div>
+
+				<h6 class="mt-4">Poznámka</h6>
+				<form id="note-form">
+					<div class="row">
+						<div class="col-md-6 col-lg-7 col-xl-8 mb-2">
+							<div class="form-outline">
+								<textarea class="form-control" 	id="message-input" rows="4"></textarea>
+								<label class="form-label" for="message-input"> Text poznámky </label>
+							</div>
+						</div>
+						<div class="col-md-6 col-lg-5 col-xl-4">
+							<div class="form-check d-flex justify-content-center mb-2">
+								<input class="form-check-input me-2 mb-2" type="checkbox" value="" id="terms-checkbox"/>
+								<label class="form-check-label" for="terms-checkbox">
+									Souhlasím se všeobecnými podmínky užívání.
+								</label>
+							</div>
+							<button type="submit" class="btn btn-primary btn-block">
+								Uložit
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+`
+// 6.ukol: Zobrazte datum premiéry filmu. -> pridano rovnou nahoru do vypisu filmu (radka cca 147 )
+
+// Zapojte do stránky film.html knihovnu dayjs přidáním HTML do hlavičky. <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+// Do prvku s id premiera vepište HTML Premiéra <strong>29. 11. 2022</strong>, kde datum nahraďte datumem 
+// premiéry filmu naformátovaným pomocí dayjs a metody .format().
+// Datum v dayjs vytvoříte například voláním dayjs('2022-12-24'). Vánoce nahraďte datumem premiéry filmu.
+// Hezké datum z dayjs vytvoříte voláním dayjs('2022-12-24').format('D. M. YYYY').
+
+// document.querySelector('#premiera').innerHTML = `
+// 	Premiéra <strong>${dayjs(film.premiera).format('D. M. YYYY')}</strong>, což je za 24 dní.
+// `
+
+
+// Bonus
+// Spočítejte kolik dní uběhlo od premiéry nebo za kolik dní premiéra bude. Pomůže vám metoda .diff().
+// Dnešní datum pro další výpočty v dayjs vytvoříte voláním dayjs().
+// Datum premiéry pak voláním dayjs('2022-12-24').
+// Pro vzdálenost mezi datumy pužijte metodu .diff() například takto: dayjs("2022-12-24").diff(dayjs(), 'days').
+// Do elementu s id premiera připište, před kolika dny nebo za kolik dní bude nebo jestli je dnes.
+
+const premieraOdDneskaTest = dayjs(film.premiera).diff(dayjs(), 'days')
+console.log(premieraOdDneskaTest)
+// vyreseno funkci r.108 a zapisem do vypisu filmu
+
+
+
+// Extra bonus
+// Zařiďte, aby tvar slova den byl ve správném tvaru, aby se třeba nestalo „což bylo před 1 dní“.
+
+
+// 7. ukol: Zařiďte, aby klikání na hvězdičky v hodnocení filmu zvýraznilo všechny hvězdičky až po kliknutou.
+// V souboru film.js si přichystejte pomocnou funkci pro zvýraznění určitého počtu hvězdiček.
+// Ve funkci počítejte s jedním vstupním parametrem, číslem od jedné do pěti.
+// Ve funkci projděte cyklem všechny prvky se třídou fa-star.
+
+// Zvýrazněným hvězdičkám odeberte třídu far a přidejte fas. Ostatním obráceně. Zvýrazněné nechť jsou ty, které jsou v pořadí menší nebo rovny číslu ze vstupu funkce. Pokud tedy funkci zavoláte například s číslem tři, první tři hvězdičky budou mít třídu fas a zbylé dvě budou mít far.
+
+// Funkci vyzkoušejte zavolat s různými hodnotami. Zkušební volání ale v kódu nenechávejte.
+
+// Smyčkou přidejte všem hvězdičkám, prvkům se třídou fa-star posluchač události na kliknutí.
+
+// Po kliknutí zjistěte, na kterou hvězdičku uživatel kliknul. Každá hvězdička má ve svém textovém obsahu číslo pořadí.
+
+// Číslo využijte jako parametr funkce předchystané podle instrukcí výše.
+
+
+
+// 8. ukol: Umožněte uživateli vyplněním formuláře přidat k filmu vlastní poznámku.
+// V souboru film.js pomocí document.querySelector najděte prvek s id note-form.
+// a. Při pokusu o odeslání tohoto formuláře zamezte výchozí chování prohlížeče.
+// b. Ověřte, že uživatel do textového pole, prvku s id message-input něco napsal. Pokud ne, přidejte prvku 
+//	třídu is-invalid, která ho zvýrazní červeně.
+
+// c. Pokud uživatel něco napsal, ověřte, že souhlasil s podmínkami, že zaškrtl políčko s id terms-checkbox. 
+//	Pokud nezaškrtl, přidejte políčku třídu is-invalid
+
+// d. Pokud uživatel splnil obě podmínky z kroků výše, nahraďte HTML obsah formuláře za odstavec 
+// 	<p class="card-text">…</p> s textem z textového pole.
+
+document.querySelector('#note-form').addEventListener('submit', (e) => {
+	e.preventDefault()		// 8a.
+	const message = document.querySelector('#message-input').value
+
+	if (message === "") {		// 8b.
+		document.querySelector('#message-input').classList.add('is-invalid')
+	} else {
+		document.querySelector('#message-input').classList.remove('is-invalid')
+
+		const termsCheckboxEl = document.querySelector('#terms-checkbox').checked
+		if (termsCheckboxEl) {		//8c.
+			document.querySelector('#terms-checkbox').classList.remove('is-invalid')
+			// 8d.
+			document.querySelector('#note-form').innerHTML = `
+				<p class="card-text">${message}</p>
+			`
+		} else {
+			document.querySelector('#terms-checkbox').classList.add('is-invalid')
+		}
+	}
+
+})
+
+
+
+
+// Bonus
+// Pokud vyživatel něco ve formuláři vynechal, pomozte mu zaměřením příslušného formulářového prvku.
+
+// V místech, kde přidáváte třídu is-invalid, volejte také na formulářovém prvku metodu .focus(). Ta například u textového pole přenese
+// kurzor pro psaní rovnou na správné místo, aby uživatel mohl začít psát z klávesnice.
+
+

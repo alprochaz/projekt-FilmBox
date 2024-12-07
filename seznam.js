@@ -104,3 +104,46 @@ const filmy = [
 		premiera: '2022-12-24',
 	},
 ]
+
+// 4 ukol: Na stránce se seznamem filmů vypište karty se všemi filmy z pole filmy.
+// 1.	Přejděte v prohlížeči na stránku se seznamem.
+// 2.	Na konci souboru seznam.js pomocí document.querySelector vyhledejte prvek s id seznam-filmu.
+// 3.	Vymažte tomuto prvku jeho vnitřní HTML, aby byl prázdný.
+// 4.	Pomocí cyklu projděte všechny filmy z předpřipraveného pole a pro každý přidejte do prvku #seznam-filmu 
+//		následující HTML doplněné o patřičné informace (název, ochutnávku, plakát).
+
+const seznamFilmuEl = document.querySelector('#seznam-filmu')
+seznamFilmuEl.innerHTML = ''
+
+filmy.forEach(item => {
+	seznamFilmuEl.innerHTML += `
+		<div class="col">
+		<div class="card">
+			<img
+				src="${item.plakat.url}"
+				width="${item.plakat.sirka}"
+				height="${item.plakat.vyska}"
+				class="card-img-top"
+				alt="plakát"
+			/>
+			<div class="card-body">
+				<h5 class="card-title"> ${item.nazev} </h5>
+				<p class="card-text"> ${item.ochutnavka} </p>
+				<a href="film.html#${item.id}" class="btn btn-primary">Přehrát</a>
+			</div>
+		</div>
+		</div>
+		
+	`
+})
+
+// 5. ukol: 2. V souboru seznam.js přidejte do odkazu href za film.html znak mřížky (#) a za něj ještě unikátní identifikátor (id), 
+// který má každý film jiný. HTML by pak mělo vypadat zhruba takto:
+// `<a href="film.html#${id}" class="btn btn-primary">Přehrát</a>`  (viz vise v kodu)
+
+
+// Bonus
+// Přidejte do pole s filmy nějaký další dle vlastního výběru.
+
+
+
