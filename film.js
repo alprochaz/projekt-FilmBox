@@ -109,14 +109,27 @@ const filmy = [
 const jakDalekoDoPremiery = (premieraOdDneska) => {
 	if (premieraOdDneska === 0) {
 		return 'je dnes'
-	} else if (premieraOdDneska > 0) {
-		return 'bude za ' + premieraOdDneska + ' dni'
-	} else {
-		return 'bylo před '+ Math.abs(premieraOdDneska) + ' dny'
+	} else if (premieraOdDneska > 0) {		// premiera teprve bude
+		if (premieraOdDneska === 1) {
+			return 'bude za ' + premieraOdDneska + ' den'
+		} else if (premieraOdDneska >= 2 && premieraOdDneska <= 4) {
+			return 'bude za ' + premieraOdDneska + ' dny'
+		} else {
+			return 'bude za ' + premieraOdDneska + ' dní'
+		}
+
+	} else {								// premiera uz byla
+		const premieraOdDneskaAbs = Math.abs(premieraOdDneska)							
+		if (premieraOdDneskaAbs === 1) {
+			return 'bylo před ' + premieraOdDneskaAbs + ' dnem'
+		} else {
+			return 'bylo před ' + premieraOdDneskaAbs + ' dny'
+		}	
 	}
 }
 
-// 5. ukol: Zobrazte příslušné informace o filmu na stránce s detailem.
+// 5. ukol ✔ -------------------------------------------------------------------------------------------------------------------------------------
+// Zobrazte příslušné informace o filmu na stránce s detailem.
 // 1.	Protože stránka film.html obsluhuje datail všech filmů, budete si muset přes adresu stránky předat informaci, který konkrétní film si 
 //		uživatel právě prohlíží. Využijeme toho, že na konec adresy můžeme přidat znak mřížky (#) a za něj libovolný text, který následně můžeme
 //		 v JavaScriptu přečíst. (V tomto kroku jsou jen informace, nic neděláte.)
@@ -204,7 +217,8 @@ detailFilmuEl.innerHTML += `
 	</div>
 
 `
-// 6.ukol: Zobrazte datum premiéry filmu. -> pridano rovnou nahoru do vypisu filmu (radka cca 147 )
+// 6.ukol ✔ ---------------------------------------------------------------------------------------------------------------------------------------
+// Zobrazte datum premiéry filmu. -> pridano rovnou nahoru do vypisu filmu (radka cca 171 )
 
 // Zapojte do stránky film.html knihovnu dayjs přidáním HTML do hlavičky. <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
 // Do prvku s id premiera vepište HTML Premiéra <strong>29. 11. 2022</strong>, kde datum nahraďte datumem 
@@ -217,41 +231,109 @@ detailFilmuEl.innerHTML += `
 // `
 
 
-// Bonus
+// Bonus ✔
 // Spočítejte kolik dní uběhlo od premiéry nebo za kolik dní premiéra bude. Pomůže vám metoda .diff().
 // Dnešní datum pro další výpočty v dayjs vytvoříte voláním dayjs().
 // Datum premiéry pak voláním dayjs('2022-12-24').
 // Pro vzdálenost mezi datumy pužijte metodu .diff() například takto: dayjs("2022-12-24").diff(dayjs(), 'days').
 // Do elementu s id premiera připište, před kolika dny nebo za kolik dní bude nebo jestli je dnes.
 
-const premieraOdDneskaTest = dayjs(film.premiera).diff(dayjs(), 'days')
+const premieraOdDneskaTest = dayjs(film.premiera).diff(dayjs(), 'days') // jen test
 console.log(premieraOdDneskaTest)
-// vyreseno funkci r.108 a zapisem do vypisu filmu
+// vyreseno funkci r.108 a zapisem do vypisu filmu r.172 - tam se funkce vola s parametrem
 
 
 
-// Extra bonus
+// Extra bonus ✔
 // Zařiďte, aby tvar slova den byl ve správném tvaru, aby se třeba nestalo „což bylo před 1 dní“.
+// -> Pridana podminka do funkce r.109 a testovano volanim s ruznymi cisly a vypisem do console
+console.log(jakDalekoDoPremiery(-1))
 
 
-// 7. ukol: Zařiďte, aby klikání na hvězdičky v hodnocení filmu zvýraznilo všechny hvězdičky až po kliknutou.
-// V souboru film.js si přichystejte pomocnou funkci pro zvýraznění určitého počtu hvězdiček.
-// Ve funkci počítejte s jedním vstupním parametrem, číslem od jedné do pěti.
+
+// 7. ukol ✔ 😵------------------------------------------------------------------------------------------------------------------------------------
+// Zařiďte, aby klikání na hvězdičky v hodnocení filmu zvýraznilo všechny hvězdičky až po kliknutou.
+// Vytvořte si pomocnou funkci pro zvýraznění určitého počtu hvězdiček (s jedním vstupním parametrem, číslem 1-5).
 // Ve funkci projděte cyklem všechny prvky se třídou fa-star.
-
-// Zvýrazněným hvězdičkám odeberte třídu far a přidejte fas. Ostatním obráceně. Zvýrazněné nechť jsou ty, které jsou v pořadí menší nebo rovny číslu ze vstupu funkce. Pokud tedy funkci zavoláte například s číslem tři, první tři hvězdičky budou mít třídu fas a zbylé dvě budou mít far.
-
+// Zvýrazněným hvězdičkám odeberte třídu far a přidejte fas. Ostatním obráceně. Zvýrazněné nechť jsou ty, 
+//	 které jsou v pořadí menší nebo rovny číslu ze vstupu funkce. Pokud tedy funkci zavoláte například s číslem tři,
+//	 první tři hvězdičky budou mít třídu fas a zbylé dvě budou mít far.
 // Funkci vyzkoušejte zavolat s různými hodnotami. Zkušební volání ale v kódu nenechávejte.
+const allStarsEl = document.querySelectorAll('.fa-star')	// vytvori pole buttonu hvezdicek
+let yourRating = 0
+
+const starRating = (event) => {
+	yourRating = event.target.textContent		// pridano pro reseni bonusu - aby si pamatoval, na kolik hvezd se kliklo
+	allStarsEl.forEach(item => {
+		if (item.textContent <= event.target.textContent) {
+			console.log(item.textContent)
+			item.classList.add('fas')
+			item.classList.remove('far')
+		} else {
+			item.classList.remove('fas')
+			item.classList.add('far')
+		}
+	})
+
+}
+
+// forEach muze mit i 2 parametry: Tohle reseni nastinil Michal
+// hvezdicky.forEach((h, i) => {
+// 	if(index < pocetHvezd) {
+// 		h.classList.add()
+// 	}
+// })
 
 // Smyčkou přidejte všem hvězdičkám, prvkům se třídou fa-star posluchač události na kliknutí.
-
 // Po kliknutí zjistěte, na kterou hvězdičku uživatel kliknul. Každá hvězdička má ve svém textovém obsahu číslo pořadí.
-
 // Číslo využijte jako parametr funkce předchystané podle instrukcí výše.
 
+allStarsEl.forEach(btn => {			// pridani posluchace na kazdou hvezdicku
+	btn.addEventListener('click', starRating)
+})
+
+// Bonus
+// Při přejíždění myší přes hvězdičky zvýrazněte všechny až po tu, na které je uživatel myší.
+// Kromě posluchače události na kliknutí přidejte i posluchač na mouseenter a opět podle textového obsahu 
+//	hvězdičky zavolejte vaši funkci s příslušným parametrem.
+// Pokud uživatel s myší odjede pryč, zvýrazněte hvězdičky zpět tak, jak byly po posledním kliknutí.
+// Kdykoliv uživatel na nějakou hvězdičku klikne, poznamenejte si bokem, kolikátá to byla.
+// S událostí mouseleave zavolete vaši funkci s poznamenanou hodnotou.
+allStarsEl.forEach(btn => {			
+	btn.addEventListener('mouseenter', (event) => {
+		allStarsEl.forEach(item => {
+			if (item.textContent <= event.target.textContent) {
+				console.log(item.textContent)
+				item.classList.add('fas')
+				item.classList.remove('far')
+			} else {
+				item.classList.remove('fas')
+				item.classList.add('far')
+			}
+		})
+	
+	})
+})
+
+allStarsEl.forEach(btn => {			
+	btn.addEventListener('mouseleave', () => {		// funguje, ale opakuje se stejny kod v podmince. Jde zkratit? ❓👀❓
+		allStarsEl.forEach(item => {
+			if (item.textContent <= yourRating) {
+				item.classList.add('fas')
+				item.classList.remove('far')
+			} else {
+				item.classList.remove('fas')
+				item.classList.add('far')
+			}
+		})
+	})
+})
 
 
-// 8. ukol: Umožněte uživateli vyplněním formuláře přidat k filmu vlastní poznámku.
+
+
+// 8. ukol ✔ ------------------------------------------------------------------------------------------------------------------------------------
+// Umožněte uživateli vyplněním formuláře přidat k filmu vlastní poznámku.
 // V souboru film.js pomocí document.querySelector najděte prvek s id note-form.
 // a. Při pokusu o odeslání tohoto formuláře zamezte výchozí chování prohlížeče.
 // b. Ověřte, že uživatel do textového pole, prvku s id message-input něco napsal. Pokud ne, přidejte prvku 
@@ -269,6 +351,7 @@ document.querySelector('#note-form').addEventListener('submit', (e) => {
 
 	if (message === "") {		// 8b.
 		document.querySelector('#message-input').classList.add('is-invalid')
+		document.querySelector('#message-input').focus()	// Bonus: aby se objevil kurzor rovnou v textovem poli
 	} else {
 		document.querySelector('#message-input').classList.remove('is-invalid')
 
@@ -286,13 +369,55 @@ document.querySelector('#note-form').addEventListener('submit', (e) => {
 
 })
 
-
-
-
-// Bonus
+// Bonus ✔
 // Pokud vyživatel něco ve formuláři vynechal, pomozte mu zaměřením příslušného formulářového prvku.
-
 // V místech, kde přidáváte třídu is-invalid, volejte také na formulářovém prvku metodu .focus(). Ta například u textového pole přenese
 // kurzor pro psaní rovnou na správné místo, aby uživatel mohl začít psát z klávesnice.
+// -> Vyreseno na r. 354
 
 
+// 9. ukol ------------------------------------------------------------------------------------------------------------------------------------
+// Obohaťte video přehrávač vlastními ovládacími prvky.
+// V souboru film.html u prvku <video> umažte ručně atribut controls. Skryjí se tím ovládací prvky předchystané přímo prohlížečem. 
+// V CSS je pak už hotový kód, který automaticky zobrazí <div class="player-controls"> s vlastním vizuálem. Vy v CSS nemusíte nic měnit. 
+// Jen si všimněte, že se na stránce objevily jiné ovládací prvky, které ale nereagují na klikání.
+
+// a. Oživte tlačítko pro přehrávání a pozastavení.
+// 	  V souboru film.js, pokud je na stránce prvek s id prehravac, přidejte posluchač události kliknutí na prvek se třídou play.😜
+// b. Na kliknutí zavolejte na prvku <video> metodu .play(). Pokud uživatel klikne, video by se mělo začít přehrávat.
+
+// c. Přidejte na <video> posluchač události playing. Ta nastává v okamžiku, kdy se video začíná přehrávat.
+// 	  Při události na prvku s id prehravac přidejte třídu playing. Předchystané CSS v takovém případě zařídí, že se přehrávací tlačítko skryje 
+// 	  a místo něho se objeví tlačítko pro pozastavení.
+
+// d. Tlačítku .pause přidejte posluchač, který po kliknutí zavolá na videu metodu .pause(), což pozastaví přehrávání.
+//	  Poslouchejte na událost s názvem pause. Pokud nastane, odeberte z přehrávače třídu playing.
+const videoPlayerEl = document.querySelector('#prehravac')
+const videoEl = document.querySelector('video')
+
+if (videoPlayerEl === null) {							// a.
+	console.log('Na strance neni prehravac')
+} else {
+	document.querySelector('.play').addEventListener('click', () => {	// b.
+		videoEl.play()
+	})
+	videoEl.addEventListener('playing', () => {			// c.
+		videoPlayerEl.classList.add('playing')	
+		
+	})
+
+	document.querySelector('.pause').addEventListener('click', () => {	// d.
+		videoEl.pause()
+	})
+	videoEl.addEventListener('pause', () => {
+		videoPlayerEl.classList.remove('playing')
+	})
+
+}
+
+
+
+// V prvku se třídou current-time zobrazujte aktuální čas přehrávaného videa.
+// Poslouchejte na prvku videa událost timeupdate. Pokud nastane, vyčtěte z videa přes vlastnost .currentTime počet přehraných sekund.
+// Aktuální čas zaokrouhlete a převeďte zvlášť na minuty a sekundy.
+// Obě hodnoty oddělené dvojtečkou vypište do prvku .current-time.
