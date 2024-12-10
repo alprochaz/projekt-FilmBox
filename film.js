@@ -394,16 +394,21 @@ document.querySelector('#note-form').addEventListener('submit', (e) => {
 //	  Poslouchejte na událost s názvem pause. Pokud nastane, odeberte z přehrávače třídu playing.
 const videoPlayerEl = document.querySelector('#prehravac')
 const videoEl = document.querySelector('video')
+const playerControlsEl = document.querySelector('.player-controls')	// pro Extra bonus
 
-if (videoPlayerEl === null) {							// a.
-	console.log('Na strance neni prehravac')
-} else {
+if (videoPlayerEl) {							// a. if videoPlayerEl bude mit nejakou hodnotu -> vrati se true a kod bude pokracovat
 	document.querySelector('.play').addEventListener('click', () => {	// b.
 		videoEl.play()
 	})
 	videoEl.addEventListener('playing', () => {			// c.
 		videoPlayerEl.classList.add('playing')	
+
+		// Extra bonus ❓👀❓ Nevim jak na podminku: pokud uzivatel nepohnul mysi nebo stiskl klavesu po dobu 3s
+			// const timerForVideoControls = setTimeout(() => {
+			// 	playerControlsEl.classList.add('hidden')
+			// }, 3000)
 		
+		// Extra bonus - konec
 	})
 
 	document.querySelector('.pause').addEventListener('click', () => {	// d.
@@ -412,7 +417,8 @@ if (videoPlayerEl === null) {							// a.
 	videoEl.addEventListener('pause', () => {
 		videoPlayerEl.classList.remove('playing')
 	})
-
+} else {										// a. kdyz bude videoPlayerEl "null" nebo undefined -> chybova hlaska
+	console.log('Na strance neni prehravac')
 }
 
 
@@ -421,3 +427,47 @@ if (videoPlayerEl === null) {							// a.
 // Poslouchejte na prvku videa událost timeupdate. Pokud nastane, vyčtěte z videa přes vlastnost .currentTime počet přehraných sekund.
 // Aktuální čas zaokrouhlete a převeďte zvlášť na minuty a sekundy.
 // Obě hodnoty oddělené dvojtečkou vypište do prvku .current-time.
+const currentTimeEl = document.querySelector('.current-time')
+videoEl.addEventListener('timeupdate', () => {		// The timeupdate event is fired when the time indicated by the currentTime attribute has been updated.
+		console.log(videoEl.currentTime)
+	const totalSeconds = Math.round(videoEl.currentTime)	// aktualni cas prehravani v sec -> zaokrouhleno dolu -> na retezec
+		console.log(totalSeconds)
+	const seconds = String((totalSeconds % 60)).padStart(2, '0')	// pouzit modulo -> tedy zbytek po vydeleni 60, aby mi nevyslo napr. 00:65s
+	const minutes = String(Math.floor(totalSeconds / 60))		// 💡 cislo bylo nutne prevest na retezec, jinak hazi chybu! padStart je jen pro retezec
+		console.log(minutes)
+	const minutesFormat = minutes.padStart(2, '0')	
+
+	currentTimeEl.innerHTML = `${minutesFormat}:${seconds}`
+})
+
+
+// Bonus ⏰
+// Spusťte/pozastavte přehrávání, pokud uživatel na stránce zmáčkne klávesu mezerník.
+// Všimněte si, že video se pozastavuje a přehrává, když uživatel píše do formuláře pro poznámku text a dělá u toho mezery. 
+// Spusťte/pozastavte přehrávání pouze v případě, že uživatel nebyl ve formuláři, když mačkal mezerník.
+
+// if (
+//   event.code === 'Space' &&
+//   event.target.tagName !== 'TEXTAREA' &&
+//   event.target.tagName !== 'INPUT' &&
+//   event.target.tagName !== 'BUTTON'
+// ) {
+//   // …
+// }
+
+// Extra bonus
+// Skryjte ovládací panel, pokud uživatel po dobu tří sekund nepohnul myší ani nestiskl žádnou klávesu. Využijte časovač. 
+// S každým pohnutím nebo stiskem ho zrušte a nastavte znovu na tři sekundy. Po uplynutí přidejte prvku .player-controls třídu hidden. 
+// Pro opětovné zobrazení (s každým pohybem, stiskem) třídu hidden zase odeberte, aby se ovládání zpět objevilo.
+
+
+console.log(videoPlayerEl.classList.contains('playing'))
+if (videoPlayerEl.classList.contains('playing')) {
+
+	const timerForVideoControls = setInterval(() => {
+		playerControlsEl.classList.toggle('hidden')
+	}, 3000)
+}
+
+
+
